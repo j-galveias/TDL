@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "849686450762",
+    "firebase_url": "https://balcoes-79acf.firebaseio.com",
+    "project_id": "balcoes-79acf",
+    "storage_bucket": "balcoes-79acf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849686450762:android:1935f31c8c084508e84cb3",
+        "android_client_info": {
+          "package_name": "com.TDL.tdl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849686450762-3t8g2hsbp0k5i0smta98eqp4tnv6aene.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPHpIRuE_AXCnswF5K47AbC7i6FSUmajs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849686450762-3t8g2hsbp0k5i0smta98eqp4tnv6aene.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
