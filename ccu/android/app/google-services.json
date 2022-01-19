@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "849686450762",
-    "firebase_url": "https://balcoes-79acf.firebaseio.com",
-    "project_id": "balcoes-79acf",
-    "storage_bucket": "balcoes-79acf.appspot.com"
+    "project_number": "269284545254",
+    "project_id": "tdl2022-a0b8b",
+    "storage_bucket": "tdl2022-a0b8b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:849686450762:android:1935f31c8c084508e84cb3",
+        "mobilesdk_app_id": "1:269284545254:android:d378b53820a75f43956127",
         "android_client_info": {
           "package_name": "com.TDL.tdl"
         }
       },
       "oauth_client": [
         {
-          "client_id": "849686450762-3t8g2hsbp0k5i0smta98eqp4tnv6aene.apps.googleusercontent.com",
+          "client_id": "269284545254-v4c8mhjdl5oasbj8dj45a63fhbitsrp8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDPHpIRuE_AXCnswF5K47AbC7i6FSUmajs"
+          "current_key": "AIzaSyBLU3NzhUBGnIdXj26zklOav3K1HSk6muE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "849686450762-3t8g2hsbp0k5i0smta98eqp4tnv6aene.apps.googleusercontent.com",
+              "client_id": "269284545254-v4c8mhjdl5oasbj8dj45a63fhbitsrp8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

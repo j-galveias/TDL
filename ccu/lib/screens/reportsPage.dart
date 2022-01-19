@@ -10,10 +10,8 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final AuthService _auth = AuthService();
   final DatabaseService db = DatabaseService();
-  
-  List<Balcao> _balcs = [];
+
   bool isLoading = true;
 
   final double topHeight = 150;
@@ -22,10 +20,6 @@ class _ReportsPageState extends State<ReportsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final top = topHeight - profileImageHeight / 2;
-    final bottom = profileImageHeight / 2;
-
     return SafeArea(
         child: Scaffold(
           key: _scaffoldKey,

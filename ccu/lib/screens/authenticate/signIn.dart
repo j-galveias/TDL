@@ -1,7 +1,5 @@
-import 'package:CCU/screens/authenticate/register.dart';
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/services/auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -15,6 +13,9 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
 
+  final double topHeight = 230;
+  final double profileImageHeight = 122;
+
   // text field state
   String email = '';
   String password = '';
@@ -26,6 +27,9 @@ class _SignInState extends State<SignIn> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  GlobalKey globalKey = GlobalKey();
+
+  AnimationController _controller;
 
   _fieldFocusChange(
       BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
@@ -35,211 +39,281 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    final top = topHeight - profileImageHeight / 2;
+    final bottom = profileImageHeight / 2;
+
     return loading
         ? Loading()
         : Material(
-            child: Container(
-              color: Colors.blue[700],
+            child: SafeArea(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 120.0, 0.0, 80.0),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.bold,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: bottom),
+                        color: Colors.blue,
+                        width: double.infinity,
+                        height: topHeight,
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 30.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            validator: (val) =>
-                                val.isEmpty ? 'Enter an email' : null,
-                            cursorColor: Colors.black45,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            focusNode: _emailFocus,
-                            controller: _email_controller,
-                            onFieldSubmitted: (val) {
-                              _fieldFocusChange(
-                                  context, _emailFocus, _passwordFocus);
-                            },
-                            onChanged: (val) {
-                              setState(() => email = val);
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
+                      Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Text(
+                                'TDL',
+                                style: TextStyle(
+                                  fontSize: 50.0,
+                                  color: Colors.white,
+                                  letterSpacing: 2,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(color: Colors.black45),
-                              ),
-                              labelText: 'Email',
-                              labelStyle: TextStyle(
-                                  color: Colors.black45, fontSize: 22),
-                              alignLabelWithHint: true,
-                              hintText: 'Enter your email',
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              suffixIcon:
-                                  Icon(Icons.email, color: Colors.black45),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            validator: (val) => val.length < 6
-                                ? 'Password must have more than 6 characters'
-                                : null,
-                            cursorColor: Colors.black45,
-                            textInputAction: TextInputAction.done,
-                            obscureText: true,
-                            onChanged: (val) {
-                              setState(() => password = val);
-                            },
-                            focusNode: _passwordFocus,
-                            controller: _password_controller,
-                            onFieldSubmitted: (val) {
-                              _passwordFocus.unfocus();
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
+                            Icon(Icons.directions_car, 
+                              color: Colors.white,
+                              size: 70,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 30.0),
+                              child: Container(
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[100],
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 3,
+                                  ),
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Column(
+                                  children: [
+                                    Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 80,
+                                            key: globalKey,
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                              child: TextFormField(
+                                                validator: (val) =>
+                                                    val.isEmpty ? 'Enter an email' : null,
+                                                cursorColor: Colors.black45,
+                                                keyboardType: TextInputType.emailAddress,
+                                                textInputAction: TextInputAction.next,
+                                                focusNode: _emailFocus,
+                                                controller: _email_controller,
+                                                onFieldSubmitted: (val) {
+                                                  _fieldFocusChange(
+                                                      context, _emailFocus, _passwordFocus);
+                                                },
+                                                onChanged: (val) {
+                                                  setState(() => email = val);
+                                                },
+                                                decoration: InputDecoration(
+                                                 // errorStyle: TextStyle(fontSize: 0),
+                                                  isDense: true,
+                                                  contentPadding:
+                                                    EdgeInsets.symmetric(vertical: 15.0),
+                                                  enabledBorder: 
+                                                    UnderlineInputBorder(
+                                                      borderSide: 
+                                                        BorderSide(color: Colors.blue[700],width: 1)
+                                                    ),
+                                                  focusedBorder: 
+                                                    UnderlineInputBorder(borderSide: 
+                                                      BorderSide(color: Colors.blue[700],width: 3.0)
+                                                    ),
+                                                  hintText: 'Enter your email',
+                                                  hintStyle: TextStyle(color: Colors.blue[500]),
+                                                  prefixIcon:
+                                                      Icon(Icons.email_outlined, color: Colors.blue, size: 25,),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 80,
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                              child: TextFormField(
+                                                validator: (val) => val.length < 6
+                                                    ? 'Password must have more than 6 characters'
+                                                    : null,
+                                                cursorColor: Colors.black45,
+                                                textInputAction: TextInputAction.done,
+                                                obscureText: true,
+                                                onChanged: (val) {
+                                                  setState(() => password = val);
+                                                },
+                                                focusNode: _passwordFocus,
+                                                controller: _password_controller,
+                                                onFieldSubmitted: (val) {
+                                                  _passwordFocus.unfocus();
+                                                },
+                                                decoration: InputDecoration(
+                                                  isDense: true,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(vertical: 15.0),
+                                                  enabledBorder: 
+                                                    UnderlineInputBorder(borderSide: 
+                                                      BorderSide(color: Colors.blue[700],width: 1)
+                                                    ),
+                                                  focusedBorder: 
+                                                    UnderlineInputBorder(borderSide: 
+                                                      BorderSide(color: Colors.blue[700],width: 3.0)
+                                                    ),
+                                                  hintText: 'Enter your password',
+                                                  hintStyle: TextStyle(color: Colors.blue[500]),
+                                                  prefixIcon:
+                                                      Icon(Icons.lock_outline_rounded, color: Colors.blue, size: 25,),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      error,
+                                      style: TextStyle(color: Colors.red, fontSize: 14),
+                                    ),
+                                    SizedBox(height:25),
+                                  ],
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(color: Colors.black45),
+                            ),
+                          ],
+                        ),
+                        Column(
+                        children: [
+                          AnimatedContainer(
+                            height: 340,
+                            duration: Duration.zero,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                               ),
-                              labelText: 'Password',
-                              labelStyle: TextStyle(
-                                  color: Colors.black45, fontSize: 22),
-                              alignLabelWithHint: true,
-                              hintText: 'Enter your password',
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              suffixIcon:
-                                  Icon(Icons.lock, color: Colors.black45),
+                            ),
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                setState(() {
+                                  loading = true;
+                                });
+                                dynamic result = await _auth
+                                    .signInEmailAndPassword(email, password);
+                                print(result);
+                                if (result == null) {
+                                  setState(() {
+                                    error = 'WRONG EMAIL OR PASSWORD';
+                                    loading = false;
+                                  });
+                                }
+                              }
+                            },
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                  Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RaisedButton(
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              setState(() {
-                                loading = true;
-                              });
-                              dynamic result = await _auth
-                                  .signInEmailAndPassword(email, password);
-                              print(result);
-                              if (result == null) {
-                                setState(() {
-                                  error = 'WRONG EMAIL OR PASSWORD';
-                                  loading = false;
-                                });
-                              }
-                            }
-                          },
-                          color: Colors.blue,
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Text(
-                            'Or',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        RaisedButton(
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              loading = true;
-                            });
-                            dynamic result = await _auth.signInWithGoogle();
-                            print(result);
-                          },
-                          color: Colors.white,
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/googleIcon.svg',
-                                width: 15,
-                                height: 15,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Sign in',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]),
-                  Text(
-                    error,
-                    style: TextStyle(color: Colors.red, fontSize: 14),
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                    thickness: 1,
-                    indent: 30,
-                    endIndent: 30,
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Don\'t have an account yet?',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, letterSpacing: 1),
-                  ),
-                  SizedBox(height: 20),
-                  RaisedButton(
-                    elevation: 0.0,
-                    shape: RoundedRectangleBorder(
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      primary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
+                      ),
                     ),
                     onPressed: () async {
                       widget.toggleView();
                     },
-                    color: Colors.blue,
                     child: Text(
-                      'Register',
+                      'Sign up',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.blue,
+                        fontSize: 22,
+                        letterSpacing: 1.5
                       ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MaterialButton(
+                          padding: EdgeInsets.all(8.0),
+                          textColor: Colors.white,
+                          elevation: 80.0,
+                          shape: Border(
+                            bottom: BorderSide(
+                            width: 2.0, color: Colors.lightBlue.shade900)),
+                          child: Container(
+                            width: 250,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/psp1.png'),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(" "),
+                            ),
+                          ),
+                          // ),
+                          onPressed: () {
+                            print('Tapped');
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(30),
+                          child: Material(
+                            shape: Border(
+                            bottom: BorderSide(
+                            width: 2.0, color: Colors.blue)),
+                            child: Ink(
+                              width: 300.0,
+                              height: 70.0,
+                              child: InkWell(
+                                onTap: () { /* ... */ },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image(image: AssetImage('assets/driving-school.png'),width: 65,),
+                                    const Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        'Driving School',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue,
+                                          fontSize: 30
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ],

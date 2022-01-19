@@ -1,5 +1,4 @@
 import 'package:CCU/services/auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -29,7 +28,6 @@ class _BodyWidgetState extends State<BodyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final top = topHeight - profileImageHeight / 2;
     final bottom = profileImageHeight / 2;
     return SafeArea(
