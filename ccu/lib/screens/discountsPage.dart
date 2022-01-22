@@ -102,7 +102,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
                       decoration: BoxDecoration(
                         color: Colors.blue[700],
                         border: Border.all(
-                          color: Colors.lightBlue[100],
+                          color: Colors.lightBlue.shade100,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(5)

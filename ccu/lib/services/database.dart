@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseService {
-  final String uid;
+  final String? uid;
 
   DatabaseService({this.uid});
 
@@ -21,13 +21,13 @@ class DatabaseService {
   final StreamController<List<Balcao>> _balcController =
       StreamController<List<Balcao>>.broadcast();
 
-  DocumentSnapshot _lastDoc;
+  late DocumentSnapshot _lastDoc;
 
-  List<List<Balcao>> _allPagedResults = List<List<Balcao>>();
+  List<List<Balcao>> _allPagedResults = List<List<Balcao>>.empty();
 
   bool _hasMoreBalcs = true;
 
-  Future<bool> checkFavBalc(String name) async {
+  /*Future<bool> checkFavBalc(String name) async {
     DocumentSnapshot doc = await userBalcaoCollection.doc(uid).get();
     try {
       if (doc.get(name) != null) {
@@ -36,7 +36,7 @@ class DatabaseService {
     } catch (e) {
       return Future<bool>.value(false);
     }
-  }
+  }*/
 
   Future addFavBalcao(String name) async {
     await balcaoCollection.doc(name).update({
@@ -60,7 +60,7 @@ class DatabaseService {
     return await balcaoCollection.doc(key).get();
   }
 
-  Future getFavs() async {
+  /*Future getFavs() async {
     // TODO: check conflicts with existed field;
     List<Balcao> listOfFavs = [];
     DocumentSnapshot docs = await userBalcaoCollection.doc(uid).get();
@@ -78,7 +78,7 @@ class DatabaseService {
       }
     }
     return listOfFavs;
-  }
+  }*/
 
   Future createUserData() async {
     return await userBalcaoCollection.doc(uid).set({
@@ -92,7 +92,7 @@ class DatabaseService {
     });
   }
 
-  Future<List<Map<String, dynamic>>> getNewBalcs() async {
+  /*Future<List<Map<String, dynamic>>> getNewBalcs() async {
     QuerySnapshot snap =
         await balcaoCollection.orderBy("date", descending: true).limit(3).get();
 
@@ -102,7 +102,7 @@ class DatabaseService {
     print(list);
 
     return list;
-  }
+  }*/
 
   Future getAllBalcs() async {
     Query query = balcaoCollection.orderBy('name').limit(11);
@@ -135,7 +135,7 @@ class DatabaseService {
       }
 
       List<Balcao> allBalcs = _allPagedResults.fold<List<Balcao>>(
-          List<Balcao>(),
+          List<Balcao>.empty(),
           (initialValue, element) => initialValue..addAll(element));
 
       //Save the last doc from the results. Only if it's the current last page

@@ -1,4 +1,5 @@
 import 'package:CCU/models/balcao.dart';
+import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,14 +13,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(StreamProvider<User>.value(
+  runApp(StreamProvider<User?>.value(
     value: AuthService().user,
+    initialData: null,
     child: MaterialApp(
       initialRoute: '/',
       routes: {
         '/': (context) => Wrapper(),
         '/wrapper': (context) => Wrapper(),
         '/home': (context) => Home(),
+        //'/cameraPage': (context) => CameraPage(),
       },
     ),
   ));

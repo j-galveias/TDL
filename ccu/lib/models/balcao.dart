@@ -9,10 +9,10 @@ class Balcao {
   int likes;
 
   Balcao(
-      {this.name,
-      this.price,
-      this.likes,
-      this.thumbnail,
-      this.images,
-      this.description});
+      {required this.name,
+      required this.price,
+      required this.likes,
+      required this.thumbnail,
+      required this.images,
+      required this.description});
 }

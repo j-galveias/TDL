@@ -1,4 +1,6 @@
+import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/services/auth.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -69,7 +71,10 @@ class _BodyWidgetState extends State<BodyWidget> {
                               size: 60,
                               color: Colors.white,
                             ), 
-                            onPressed: () {},
+                            onPressed: () async {
+                              await availableCameras().then((value) => Navigator.push(context, 
+                              MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
+                            },
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
@@ -100,9 +105,10 @@ class _BodyWidgetState extends State<BodyWidget> {
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child:
                   Text(
-                    'Name',
+                    _auth.getCurrentUser().displayName!,
                     style: TextStyle(
                       fontSize: 25.0,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 1.0,
                       color: Colors.blue,),
                   ),

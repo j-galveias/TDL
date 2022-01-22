@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
             label: 'Reports',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.money_off),
+            icon: /*ImageIcon(AssetImage("assets/tag.png"), size: 0.1,),*/ Icon(Icons.money_off),
             label: 'Discounts',
           ),
         ],

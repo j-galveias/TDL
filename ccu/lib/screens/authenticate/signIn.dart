@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
-  SignIn({this.toggleView});
+  SignIn({required this.toggleView});
 
   @override
   _SignInState createState() => _SignInState();
@@ -28,8 +28,6 @@ class _SignInState extends State<SignIn> {
   final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   GlobalKey globalKey = GlobalKey();
-
-  AnimationController _controller;
 
   _fieldFocusChange(
       BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
@@ -102,7 +100,7 @@ class _SignInState extends State<SignIn> {
                                               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                               child: TextFormField(
                                                 validator: (val) =>
-                                                    val.isEmpty ? 'Enter an email' : null,
+                                                    val!.isEmpty ? 'Enter an email' : null,
                                                 cursorColor: Colors.black45,
                                                 keyboardType: TextInputType.emailAddress,
                                                 textInputAction: TextInputAction.next,
@@ -116,18 +114,16 @@ class _SignInState extends State<SignIn> {
                                                   setState(() => email = val);
                                                 },
                                                 decoration: InputDecoration(
-                                                 // errorStyle: TextStyle(fontSize: 0),
-                                                  isDense: true,
                                                   contentPadding:
                                                     EdgeInsets.symmetric(vertical: 15.0),
                                                   enabledBorder: 
                                                     UnderlineInputBorder(
                                                       borderSide: 
-                                                        BorderSide(color: Colors.blue[700],width: 1)
+                                                        BorderSide(color: Colors.blue.shade700,width: 1)
                                                     ),
                                                   focusedBorder: 
                                                     UnderlineInputBorder(borderSide: 
-                                                      BorderSide(color: Colors.blue[700],width: 3.0)
+                                                      BorderSide(color: Colors.blue.shade700,width: 3.0)
                                                     ),
                                                   hintText: 'Enter your email',
                                                   hintStyle: TextStyle(color: Colors.blue[500]),
@@ -142,7 +138,7 @@ class _SignInState extends State<SignIn> {
                                             child: Padding(
                                               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                               child: TextFormField(
-                                                validator: (val) => val.length < 6
+                                                validator: (val) => val!.length < 6
                                                     ? 'Password must have more than 6 characters'
                                                     : null,
                                                 cursorColor: Colors.black45,
@@ -162,11 +158,11 @@ class _SignInState extends State<SignIn> {
                                                       EdgeInsets.symmetric(vertical: 15.0),
                                                   enabledBorder: 
                                                     UnderlineInputBorder(borderSide: 
-                                                      BorderSide(color: Colors.blue[700],width: 1)
+                                                      BorderSide(color: Colors.blue.shade700,width: 1)
                                                     ),
                                                   focusedBorder: 
                                                     UnderlineInputBorder(borderSide: 
-                                                      BorderSide(color: Colors.blue[700],width: 3.0)
+                                                      BorderSide(color: Colors.blue.shade700,width: 3.0)
                                                     ),
                                                   hintText: 'Enter your password',
                                                   hintStyle: TextStyle(color: Colors.blue[500]),
@@ -189,133 +185,133 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                           ],
-                        ),
-                        Column(
-                        children: [
-                          AnimatedContainer(
-                            height: 340,
-                            duration: Duration.zero,
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              primary: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (_formKey.currentState.validate()) {
-                                setState(() {
-                                  loading = true;
-                                });
-                                dynamic result = await _auth
-                                    .signInEmailAndPassword(email, password);
-                                print(result);
-                                if (result == null) {
-                                  setState(() {
-                                    error = 'WRONG EMAIL OR PASSWORD';
-                                    loading = false;
-                                  });
-                                }
-                              }
-                            },
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      primary: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      ),
-                    ),
-                    onPressed: () async {
-                      widget.toggleView();
-                    },
-                    child: Text(
-                      'Sign up',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 22,
-                        letterSpacing: 1.5
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      Column(
                       children: [
-                        MaterialButton(
-                          padding: EdgeInsets.all(8.0),
-                          textColor: Colors.white,
-                          elevation: 80.0,
-                          shape: Border(
-                            bottom: BorderSide(
-                            width: 2.0, color: Colors.lightBlue.shade900)),
-                          child: Container(
-                            width: 250,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/psp1.png'),
-                                  fit: BoxFit.cover),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(" "),
-                            ),
-                          ),
-                          // ),
-                          onPressed: () {
-                            print('Tapped');
-                          },
+                        Container(
+                          height: 340,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(30),
-                          child: Material(
-                            shape: Border(
-                            bottom: BorderSide(
-                            width: 2.0, color: Colors.blue)),
-                            child: Ink(
-                              width: 300.0,
-                              height: 70.0,
-                              child: InkWell(
-                                onTap: () { /* ... */ },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image(image: AssetImage('assets/driving-school.png'),width: 65,),
-                                    const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        'Driving School',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                          fontSize: 30
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            primary: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
                             ),
                           ),
-                        )
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                loading = true;
+                              });
+                              dynamic result = await _auth
+                                  .signInEmailAndPassword(email, password);
+                              print(result);
+                              if (result == null) {
+                                setState(() {
+                                  error = 'WRONG EMAIL OR PASSWORD';
+                                  loading = false;
+                                });
+                              }
+                            }
+                          },
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20
+                            ),
+                          ),
+                        ),
                       ],
                     ),
+                  ],
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    primary: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    ),
                   ),
+                  onPressed: () async {
+                    widget.toggleView();
+                  },
+                  child: Text(
+                    'Sign up',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 22,
+                      decoration: TextDecoration.underline,
+                      letterSpacing: 1.5
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
+                        padding: EdgeInsets.all(8.0),
+                        textColor: Colors.white,
+                        elevation: 80.0,
+                        shape: Border(
+                          bottom: BorderSide(
+                          width: 2.0, color: Colors.lightBlue.shade900)),
+                        child: Container(
+                          width: 250,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage('assets/psp1.png'),
+                                fit: BoxFit.cover),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(" "),
+                          ),
+                        ),
+                        // ),
+                        onPressed: () {
+                          print('Tapped');
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: Material(
+                          shape: Border(
+                          bottom: BorderSide(
+                          width: 2.0, color: Colors.blue)),
+                          child: Ink(
+                            width: 300.0,
+                            height: 70.0,
+                            child: InkWell(
+                              onTap: () { /* ... */ },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Image(image: AssetImage('assets/driving-school.png'),width: 65,),
+                                  const Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      'Driving School',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                        fontSize: 30
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
                 ],
               ),
             ),

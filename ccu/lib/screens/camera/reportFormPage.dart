@@ -1,0 +1,282 @@
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+
+class ReportFormPage extends StatefulWidget {
+
+  final XFile? previewFile;
+  const ReportFormPage({this.previewFile, Key? key}) : super(key: key);
+
+  @override
+  _ReportFormPageState createState() => _ReportFormPageState();
+}
+
+class _ReportFormPageState extends State<ReportFormPage>{
+  final double topHeight = 150;
+
+  // text field state
+  String description = "";
+  String? infraction = "Select Infraction";
+  String licensePlate = '';
+  String location = "";
+  String error = '';
+
+  final infractions = ["Select Infraction", "Parking", "Speeding", "Failing to signal", "Failing to stop"];
+
+  TextEditingController _description_controller = TextEditingController();
+  TextEditingController _licensePlate_controller = TextEditingController();
+  TextEditingController _location_controller = TextEditingController();
+
+  final FocusNode _descriptionFocus = FocusNode();
+  final FocusNode _licensePlateFocus = FocusNode();
+  final FocusNode _locationFocus = FocusNode();
+  final _formKey = GlobalKey<FormState>();
+
+  _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+  DropdownMenuItem<String> _buildMenuItem(String item) => DropdownMenuItem(
+    value: item,
+    child: Text(
+      item,
+      style: TextStyle(fontSize: 20,),
+    ),
+  );
+
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: 
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Container(
+                      color: Colors.blue,
+                      width: double.infinity,
+                      height: topHeight,
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Text("TDL", 
+                          style:
+                            TextStyle(
+                              color: Colors.white,
+                              fontSize: 50
+                            ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
+                      child: Column(
+                        children: [
+                          IconButton (
+                            icon: 
+                              Icon(
+                                Icons.info,
+                                size: 60,
+                                color: Colors.white,
+                              ), 
+                              onPressed: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    Center(
+                      child: 
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+                          child: Text("Report",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                            ),
+                          ),
+                        )
+                    )
+                  ],
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        child: Container(
+                          color: Colors.lightBlue.shade50,
+                          height: 200,
+                          child: TextFormField(
+                            textAlignVertical: TextAlignVertical.top,
+                            expands: true,
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter a description' : null,
+                            cursorColor: Colors.black45,
+                            textInputAction: TextInputAction.done,
+                            controller: _description_controller,
+                            onFieldSubmitted: (val) {
+                              _descriptionFocus.unfocus();
+                            },
+                            onChanged: (val) {
+                              setState(() => description = val);
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: 
+                                OutlineInputBorder(
+                                  borderSide: 
+                                    BorderSide(color: Colors.blue.shade700, width: 1)
+                                ),
+                              focusedBorder: 
+                                OutlineInputBorder(borderSide: 
+                                  BorderSide(color: Colors.blue.shade700, width: 3.0)
+                                ),
+                              hintText: 'Description:',
+                              hintStyle: TextStyle(color: Colors.blue[500]),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),                  
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.lightBlue.shade50,
+                              borderRadius: BorderRadius.circular(3.0),
+                              border: Border.all(color: Colors.blue, width: 1),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.lightBlue.shade50)
+                                  ),
+                                ),
+                                value: infraction,
+                                isExpanded: true,
+                                items: infractions.map(_buildMenuItem).toList(),
+                                onChanged: (value) => setState(() => infraction = value),
+                                validator: (val) => val == "Select Infraction"
+                                  ? 'Select Infraction'
+                                  : null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        child: Container(
+                          color: Colors.lightBlue.shade50,
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            validator: (val) =>
+                                val!.length != 6 ? 'Enter a License Plate' : null,
+                            cursorColor: Colors.black45,
+                            textInputAction: TextInputAction.next,
+                            controller: _licensePlate_controller,
+                            onFieldSubmitted: (val) {
+                              _fieldFocusChange(
+                                context, _licensePlateFocus, _locationFocus);                      },
+                            onChanged: (val) {
+                              setState(() => licensePlate = val);
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: 
+                                OutlineInputBorder(
+                                  borderSide: 
+                                    BorderSide(color: Colors.blue.shade700, width: 1)
+                                ),
+                              focusedBorder: 
+                                OutlineInputBorder(borderSide: 
+                                  BorderSide(color: Colors.blue.shade700, width: 3.0)
+                                ),
+                              hintText: 'License Plate:',
+                              hintStyle: TextStyle(color: Colors.blue[500]),
+                            ),
+                          ),
+                        ),
+                      ),  
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        child: Container(
+                          color: Colors.lightBlue.shade50,
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter a License Plate' : null,
+                            cursorColor: Colors.black45,
+                            textInputAction: TextInputAction.done,
+                            controller: _location_controller,
+                            onFieldSubmitted: (val) {
+                              _locationFocus.unfocus();
+                            },
+                            onChanged: (val) {
+                              setState(() => location = val);
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: 
+                                OutlineInputBorder(
+                                  borderSide: 
+                                    BorderSide(color: Colors.blue.shade700, width: 1)
+                                ),
+                              focusedBorder: 
+                                OutlineInputBorder(borderSide: 
+                                  BorderSide(color: Colors.blue.shade700, width: 3.0)
+                                ),
+                              hintText: 'Location:',
+                              hintStyle: TextStyle(color: Colors.blue[500]),
+                            ),
+                          ),
+                        ),
+                      ),  
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        primary: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          
+                        }
+                      },
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+             ]
+            ),
+          ),
+        )
+      );
+  }
+}
