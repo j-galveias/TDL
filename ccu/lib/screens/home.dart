@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 // TODO: Add loading animation when signing out
 
 class Home extends StatefulWidget {
+  int? receivedIndex;
+  Home({this.receivedIndex, Key? key}) : super(key: key);
   @override
   _HomeState createState() => _HomeState();
 }
@@ -30,6 +32,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.receivedIndex != -1 && widget.receivedIndex != null){
+      _currentIndex = widget.receivedIndex!;
+      widget.receivedIndex = -1;
+    }
+
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -42,7 +49,7 @@ class _HomeState extends State<Home> {
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.note_alt_outlined ),
+            icon: Icon(Icons.note_alt_outlined),
             label: 'Reports',
           ),
           BottomNavigationBarItem(

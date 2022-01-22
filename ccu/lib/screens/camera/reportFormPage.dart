@@ -1,3 +1,4 @@
+import 'package:CCU/screens/camera/submitedReportPage.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class _ReportFormPageState extends State<ReportFormPage>{
     value: item,
     child: Text(
       item,
-      style: TextStyle(fontSize: 20,),
+      style: TextStyle(fontSize: 20,color: Colors.blue),
     ),
   );
 
@@ -260,7 +261,13 @@ class _ReportFormPageState extends State<ReportFormPage>{
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          
+                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: 
+                              (context) => SubmitedReportPage(
+                                previewFile: widget.previewFile,
+                                description: description,
+                                infraction: infraction,
+                                licensePlate: licensePlate,
+                                location: location,)), (route) => false); 
                         }
                       },
                       child: Text(
