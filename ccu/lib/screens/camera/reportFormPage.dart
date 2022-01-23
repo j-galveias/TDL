@@ -204,7 +204,7 @@ class _ReportFormPageState extends State<ReportFormPage>{
                                 OutlineInputBorder(borderSide: 
                                   BorderSide(color: Colors.blue.shade700, width: 3.0)
                                 ),
-                              hintText: 'License Plate:',
+                              hintText: 'License Plate: Ex(AA20AB)',
                               hintStyle: TextStyle(color: Colors.blue[500]),
                             ),
                           ),
@@ -267,7 +267,7 @@ class _ReportFormPageState extends State<ReportFormPage>{
                                 description: description,
                                 infraction: infraction,
                                 licensePlate: licensePlate,
-                                location: location,)), (route) => false); 
+                                location: location,)), ModalRoute.withName('/')); 
                         }
                       },
                       child: Text(

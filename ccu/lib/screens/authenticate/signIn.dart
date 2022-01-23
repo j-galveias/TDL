@@ -185,133 +185,113 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                           ],
-                      ),
-                      Column(
-                      children: [
-                        Container(
-                          height: 340,
                         ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                        Column(
+                          children: [
+                            Container(
+                              height: 340,
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                primary: Colors.blue,
+                                shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  dynamic result = await _auth.signInEmailAndPassword(email, password);
+                                  print(result);
+                                  if (result == null) {
+                                    setState(() {
+                                      error = 'WRONG EMAIL OR PASSWORD';
+                                      loading = false;
+                                    });
+                                  }
+                                }
+                              },
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      primary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                    onPressed: () async {
+                      widget.toggleView();
+                    },
+                    child: Text(
+                      'Sign up',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 22,
+                        decoration: TextDecoration.underline,
+                        letterSpacing: 1.5
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MaterialButton(
+                          padding: EdgeInsets.all(8.0),
+                          textColor: Colors.white,
+                          elevation: 80.0,
+                          shape: Border(
+                            bottom: BorderSide(
+                            width: 2.0, color: Colors.lightBlue.shade900)),
+                          child: Container(
+                            width: 250,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/psp1.png'),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(" "),
                             ),
                           ),
+                          // ),
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              loading = true;
+                            });
+                            dynamic result = await _auth
+                            //.registerEmailAndPasswordPolice();
+                            .signInEmailAndPassword("police@mail.com", "123456");
+                            print(result);
+                            if (result == null) {
                               setState(() {
-                                loading = true;
+                                error = 'WRONG EMAIL OR PASSWORD';
+                                loading = false;
                               });
-                              dynamic result = await _auth
-                                  .signInEmailAndPassword(email, password);
-                              print(result);
-                              if (result == null) {
-                                setState(() {
-                                  error = 'WRONG EMAIL OR PASSWORD';
-                                  loading = false;
-                                });
-                              }
                             }
                           },
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20
-                            ),
-                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    primary: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                    ),
                   ),
-                  onPressed: () async {
-                    widget.toggleView();
-                  },
-                  child: Text(
-                    'Sign up',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 22,
-                      decoration: TextDecoration.underline,
-                      letterSpacing: 1.5
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        padding: EdgeInsets.all(8.0),
-                        textColor: Colors.white,
-                        elevation: 80.0,
-                        shape: Border(
-                          bottom: BorderSide(
-                          width: 2.0, color: Colors.lightBlue.shade900)),
-                        child: Container(
-                          width: 250,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage('assets/psp1.png'),
-                                fit: BoxFit.cover),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(" "),
-                          ),
-                        ),
-                        // ),
-                        onPressed: () {
-                          print('Tapped');
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: Material(
-                          shape: Border(
-                          bottom: BorderSide(
-                          width: 2.0, color: Colors.blue)),
-                          child: Ink(
-                            width: 300.0,
-                            height: 70.0,
-                            child: InkWell(
-                              onTap: () { /* ... */ },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Image(image: AssetImage('assets/driving-school.png'),width: 65,),
-                                  const Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      'Driving School',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue,
-                                        fontSize: 30
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                  SizedBox(height: 60,)
                 ],
               ),
             ),

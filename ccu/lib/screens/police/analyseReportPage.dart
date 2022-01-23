@@ -1,73 +1,29 @@
-import 'dart:io';
-
+import 'package:CCU/models/report.dart';
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:CCU/services/database.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:CCU/screens/home.dart';
 
-class SubmitedReportPage extends StatefulWidget {
+class AnalyseReportPage extends StatefulWidget {
+  Report report;
 
-  final XFile? previewFile;
-  final String? description;
-  final String? infraction;
-  final String? licensePlate;
-  final String? location;
-  const SubmitedReportPage({
-    this.previewFile, 
-    this.description, 
-    this.infraction, 
-    this.licensePlate, 
-    this.location, 
-    Key? key}) : super(key: key);
+  AnalyseReportPage({required this.report, Key? key}) : super(key: key);
 
   @override
-  _SubmitedReportPageState createState() => _SubmitedReportPageState();
+  _AnalyseReportPageState createState() => _AnalyseReportPageState();
 }
 
-class _SubmitedReportPageState extends State<SubmitedReportPage>{
-
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    DateTime now = new DateTime.now();
-    var formatter = new DateFormat('dd-MM-yyyy HH:mm');
-    String formattedDate = formatter.format(now);
-
-    DatabaseService(uid: AuthService().getCurrentUser().uid).
-      createReportData(
-        widget.infraction!, 
-        widget.licensePlate!, 
-        widget.location!, 
-        widget.description!, 
-        File(widget.previewFile!.path), 
-        formattedDate,
-      ).then((value) {
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
-  
+class _AnalyseReportPageState extends State<AnalyseReportPage> {
+  bool isLoading = false;
   final double topHeight = 150;
   final double profileImageHeight = 122;
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = new DateTime.now();
-    var formatter = new DateFormat('dd-MM-yyyy HH:mm:ss');
-    String formattedDate = formatter.format(now);
-    DateTime date = new DateTime(now.day, now.month, now.year, now.hour, now.minute);
     
     if(isLoading){
       return Loading();
     }
-
     return SafeArea(
         child: Scaffold(
           body: 
@@ -94,33 +50,6 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
-                    child: Column(
-                      children: [
-                        IconButton (
-                          icon: 
-                            Icon(
-                              Icons.photo_camera,
-                              size: 60,
-                              color: Colors.white,
-                            ), 
-                            onPressed: () {},
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
-                          child: 
-                            Text(
-                              "Report",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white
-                              ),
-                            ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Center(
                     child: 
                       Padding(
@@ -142,7 +71,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                     border: Border.all(color: Colors.blueAccent, width: 3)
                   ),
                   height: 200,
-                  child: Image.file(File(widget.previewFile!.path),),
+                  child: Image(image: NetworkImage(widget.report.image)),
                 ),
               ),
               SizedBox(height: 10,),
@@ -165,7 +94,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                       width: 260,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        child: Text(widget.report.description,
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
@@ -190,7 +119,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.infraction!,
+                    child: Text(widget.report.infraction,
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -213,7 +142,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.licensePlate!,
+                    child: Text(widget.report.licensePlate,
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -235,7 +164,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.location!,
+                    child: Text(widget.report.location,
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -258,36 +187,80 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(formattedDate,
+                    child: Text(widget.report.date,
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
                 ],
               ),
+              SizedBox(height: 20,),
+              Container(
+                child:
+                widget.report.status != "To be reviewed" ?
+                  Container(
+                      height: 50,
+                      width: 110,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          primary: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Text("Close", style: TextStyle(fontSize: 22),),
+                      ),
+                    )
+                  :
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 110,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            primary: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+                            Navigator.pop(context);
+                          },
+                          child: Text("Accept", style: TextStyle(fontSize: 22),),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 110,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            primary: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Rejected");
+                            Navigator.pop(context);
+                          },
+                          child: Text("Reject", style: TextStyle(fontSize: 22),),
+                        ),
+                      ),
+                    ],
+                  )
+              ),
             ]
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: (index) {
-                Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false, arguments: index); 
-            },
-            type: BottomNavigationBarType.fixed,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle_outlined),
-                label: 'Profile',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.note_alt_outlined),
-                label: 'Reports',
-              ),
-              BottomNavigationBarItem(
-                icon: /*ImageIcon(AssetImage("assets/tag.png"), size: 0.1,),*/ Icon(Icons.money_off),
-                label: 'Discounts',
-              ),
-            ],
-            selectedItemColor: Colors.grey.shade600,
           ),
         )
     );
   }
+
 }

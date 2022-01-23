@@ -1,3 +1,4 @@
+import 'package:CCU/models/policeUser.dart';
 import 'package:CCU/models/user.dart';
 import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/screens/loading.dart';
@@ -8,12 +9,12 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProfilePage extends StatefulWidget {
+class PoliceProfilePage extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _PoliceProfilePageState createState() => _PoliceProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _PoliceProfilePageState extends State<PoliceProfilePage> {
   @override
   Widget build(BuildContext context) {
     return BodyWidget();
@@ -40,13 +41,13 @@ class _BodyWidgetState extends State<BodyWidget> {
     final top = topHeight - profileImageHeight / 2;
     final bottom = profileImageHeight / 2;
   
-    return StreamBuilder<UserData>(
-      stream: DatabaseService(uid: AuthService().getCurrentUser().uid).userData,
+    return StreamBuilder<PoliceUserData>(
+      stream: DatabaseService(uid: AuthService().getCurrentUser().uid).policeUserData,
       builder: (context, snapshot) {
         if(!snapshot.hasData){
           return Loading();
         }
-        UserData userData = snapshot.data!;
+        PoliceUserData userData = snapshot.data!;
         return SafeArea(
             child: Scaffold(
               key: _scaffoldKey,
@@ -145,40 +146,13 @@ class _BodyWidgetState extends State<BodyWidget> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                             child: Text(
-                              "Daily Reports",
+                              "Reports to be Reviewed",
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontSize: 18.0)
                             ),
                           ),
-                          Text(userData.dailyReports.toString()+
-                            "/3",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 18.0),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        height: 80, 
-                        child: 
-                          VerticalDivider(
-                            thickness: 1.8,
-                            color: Colors.blue[200])
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            child: Text(
-                              "Points",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 18.0)
-                            ),
-                          ),
-                          Text(
-                            userData.licensePoints.toString(),
+                          Text(userData.reports_to_be_reviewed.toString(),
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 18.0),
@@ -204,7 +178,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                             ),
                           ),
                           Text(
-                            userData.totalReports.toString(),
+                            userData.total_reports.toString(),
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 18.0),
@@ -214,12 +188,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                     ],
                   ),
                   Container(
-                    child:
-                      Image(
-                        image: AssetImage('assets/defaultDL.png'),
-                        width: 400,
-                        height: 230,
-                      )
+                    height: 230,
                   ),
                   TextButton.icon(
                     onPressed: () async {

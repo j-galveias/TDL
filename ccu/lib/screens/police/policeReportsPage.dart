@@ -1,17 +1,20 @@
+
 import 'package:CCU/models/balcao.dart';
+import 'package:CCU/models/policeUser.dart';
 import 'package:CCU/models/report.dart';
 import 'package:CCU/models/user.dart';
 import 'package:CCU/screens/loading.dart';
+import 'package:CCU/screens/police/analyseReportPage.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:CCU/services/database.dart';
 import 'package:flutter/material.dart';
 
-class ReportsPage extends StatefulWidget {
+class PoliceReportsPage extends StatefulWidget {
   @override
-  _ReportsPageState createState() => _ReportsPageState();
+  _PoliceReportsPageState createState() => _PoliceReportsPageState();
 }
 
-class _ReportsPageState extends State<ReportsPage> {
+class _PoliceReportsPageState extends State<PoliceReportsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   
   List<Report> _reports = [];
@@ -23,7 +26,7 @@ class _ReportsPageState extends State<ReportsPage> {
     super.initState();
 
     DatabaseService(uid: AuthService().getCurrentUser().uid)
-      .getAllReports(false).then((value) {
+      .getAllReports(true).then((value) {
         setState(() {
           if (value == null) {
             isLoading = false;
@@ -41,13 +44,13 @@ class _ReportsPageState extends State<ReportsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<UserData>(
-      stream: DatabaseService(uid: AuthService().getCurrentUser().uid).userData,
+    return StreamBuilder<PoliceUserData>(
+      stream: DatabaseService(uid: AuthService().getCurrentUser().uid).policeUserData,
       builder: (context, snapshot) {
         if(!snapshot.hasData){
           return Loading();
         }
-        UserData userData = snapshot.data!;
+        PoliceUserData userData = snapshot.data!;
         return SafeArea(
             child: Scaffold(
               key: _scaffoldKey,
@@ -126,40 +129,13 @@ class _ReportsPageState extends State<ReportsPage> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                               child: Text(
-                                "Daily Reports",
+                                "Reports to be reviewed",
                                 style: TextStyle(
                                   color: Colors.blue,
                                   fontSize: 18.0)
                               ),
                             ),
-                            Text(userData.dailyReports.toString()+
-                              "/3",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 18.0),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 80, 
-                          child: 
-                            VerticalDivider(
-                              thickness: 1.8,
-                              color: Colors.blue[200])
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Text(
-                                "Approved",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 18.0)
-                              ),
-                            ),
-                            Text(
-                              userData.approved.toString(),
+                            Text(userData.reports_to_be_reviewed.toString(),
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontSize: 18.0),
@@ -185,7 +161,7 @@ class _ReportsPageState extends State<ReportsPage> {
                               ),
                             ),
                             Text(
-                              userData.totalReports.toString(),
+                              userData.total_reports.toString(),
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontSize: 18.0),
@@ -205,7 +181,7 @@ class _ReportsPageState extends State<ReportsPage> {
                               isLoading = true;
                             });
                             DatabaseService(uid: AuthService().getCurrentUser().uid)
-                              .getAllReports(false).then((value) {
+                              .getAllReports(true).then((value) {
                                 setState(() {
                                   if (value == null) {
                                     isLoading = false;
@@ -223,43 +199,48 @@ class _ReportsPageState extends State<ReportsPage> {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  border: Border.all(
-                                    color: Colors.blueAccent,
-                                    width: 3,
-                                  )
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image(
-                                      image: NetworkImage(_reports[index].image),
-                                      width: 100,
-                                      height: 180,
-                                    ),
-                                    Container(
-                                      width: 105,
-                                      child: Text(_reports[index].date, 
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 20
+                              child: InkWell(
+                                onTap: (){
+                                   Navigator.push(context, MaterialPageRoute(builder: (context) => AnalyseReportPage(report: _reports[index])));
+                                },
+                                child: Container(
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    border: Border.all(
+                                      color: Colors.blueAccent,
+                                      width: 3,
+                                    )
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: NetworkImage(_reports[index].image),
+                                        width: 100,
+                                        height: 180,
+                                      ),
+                                      Container(
+                                        width: 105,
+                                        child: Text(_reports[index].date, 
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 20
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: 90,
-                                      child: Text(_reports[index].status, 
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20
+                                      Container(
+                                        width: 90,
+                                        child: Text(_reports[index].status, 
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

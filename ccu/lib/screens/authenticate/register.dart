@@ -222,8 +222,8 @@ class _RegisterState extends State<Register> {
                                             child: Padding(
                                               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                               child: TextFormField(
-                                                validator: (val) => val!.length != 9
-                                                    ? 'NIF must have 9 characters'
+                                                validator: (val) => val!.length != 6
+                                                    ? 'License must have 6 characters'
                                                     : null,
                                                 cursorColor: Colors.black45,
                                                 keyboardType: TextInputType.number,
@@ -248,7 +248,7 @@ class _RegisterState extends State<Register> {
                                                     UnderlineInputBorder(borderSide: 
                                                       BorderSide(color: Colors.blue.shade700,width: 3.0)
                                                     ),
-                                                  hintText: 'Enter your NIF',
+                                                  hintText: 'Enter your License Plate',
                                                   hintStyle: TextStyle(color: Colors.blue[500]),
                                                   prefixIconConstraints: BoxConstraints(
                                                     maxWidth: 100,
@@ -292,7 +292,8 @@ class _RegisterState extends State<Register> {
                                   loading = true;
                                 });
                                 dynamic result = await _auth.registerEmailAndPassword(
-                                    email, password, name);
+                                    email, password, name, nif);
+                                print(result);
                                 if (result == null) {
                                   setState(() {
                                     error = 'Please supply a valid email';

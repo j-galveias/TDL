@@ -1,4 +1,7 @@
 import 'package:CCU/models/user.dart';
+import 'package:CCU/screens/police/mapPage.dart';
+import 'package:CCU/screens/police/policeProfilePage.dart';
+import 'package:CCU/screens/police/policeReportsPage.dart';
 import 'package:CCU/screens/profilePage.dart';
 import 'package:CCU/screens/reportsPage.dart';
 import 'package:CCU/screens/discountsPage.dart';
@@ -9,20 +12,20 @@ import 'package:provider/provider.dart';
 
 // TODO: Add loading animation when signing out
 
-class Home extends StatefulWidget {
+class PoliceHome extends StatefulWidget {
   int? receivedIndex;
-  Home({this.receivedIndex, Key? key}) : super(key: key);
+  PoliceHome({this.receivedIndex, Key? key}) : super(key: key);
   @override
-  _HomeState createState() => _HomeState();
+  _PoliceHomeState createState() => _PoliceHomeState();
 }
 
-class _HomeState extends State<Home> {
+class _PoliceHomeState extends State<PoliceHome> {
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    ProfilePage(),
-    ReportsPage(),
-    DiscountsPage()
+    PoliceProfilePage(),
+    PoliceReportsPage(),
+    MapPage()
   ];
 
   void onTappedBar(int index) {
@@ -54,8 +57,8 @@ class _HomeState extends State<Home> {
             label: 'Reports',
           ),
           BottomNavigationBarItem(
-            icon: /*ImageIcon(AssetImage("assets/tag.png"), size: 0.1,),*/ Icon(Icons.money_off),
-            label: 'Discounts',
+            icon: /*ImageIcon(AssetImage("assets/tag.png"), size: 0.1,),*/ Icon(Icons.map),
+            label: 'Map',
           ),
         ],
         selectedItemColor: Colors.blue,

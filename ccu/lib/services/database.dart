@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:collection';
-
-import 'package:CCU/models/balcao.dart';
+import 'dart:io';
+import 'package:CCU/models/policeUser.dart';
+import 'package:CCU/models/report.dart';
+import 'package:CCU/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 class DatabaseService {
   final String? uid;
@@ -12,20 +13,20 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   // collection reference
-  final CollectionReference balcaoCollection =
-      FirebaseFirestore.instance.collection('balcoes');
+  final CollectionReference reportCollection =
+      FirebaseFirestore.instance.collection('reports');
 
-  final CollectionReference userBalcaoCollection =
-      FirebaseFirestore.instance.collection('user_balcoes');
+  final CollectionReference userReportCollection =
+      FirebaseFirestore.instance.collection('user_reports');
 
-  final StreamController<List<Balcao>> _balcController =
-      StreamController<List<Balcao>>.broadcast();
+  //final StreamController<List<Balcao>> _balcController =
+      //StreamController<List<Balcao>>.broadcast();
 
-  late DocumentSnapshot _lastDoc;
+  DocumentSnapshot? _lastDoc;
 
-  List<List<Balcao>> _allPagedResults = List<List<Balcao>>.empty();
+  List<List<Report>> _allPagedResults = [];
 
-  bool _hasMoreBalcs = true;
+  bool _hasMoreReports = true;
 
   /*Future<bool> checkFavBalc(String name) async {
     DocumentSnapshot doc = await userBalcaoCollection.doc(uid).get();
@@ -38,27 +39,27 @@ class DatabaseService {
     }
   }*/
 
-  Future addFavBalcao(String name) async {
+  /*Future addFavBalcao(String name) async {
     await balcaoCollection.doc(name).update({
       'likes': FieldValue.increment(1),
     });
     return await userBalcaoCollection.doc(uid).update({
       name: name,
     });
-  }
+  }*/
 
-  Future deleteFavBalcao(String name) async {
+  /*Future deleteFavBalcao(String name) async {
     await balcaoCollection.doc(name).update({
       'likes': FieldValue.increment(-1),
     });
     return await userBalcaoCollection.doc(uid).update({
       name: FieldValue.delete(),
     });
-  }
+  }*/
 
-  Future getBalc(String key) async {
+  /*Future getBalc(String key) async {
     return await balcaoCollection.doc(key).get();
-  }
+  }*/
 
   /*Future getFavs() async {
     // TODO: check conflicts with existed field;
@@ -80,16 +81,108 @@ class DatabaseService {
     return listOfFavs;
   }*/
 
-  Future createUserData() async {
-    return await userBalcaoCollection.doc(uid).set({
+  Future<String> uploadImage(File image, String path) async {
+    try{
+      final ref = FirebaseStorage.instance.ref(path);
+      var task = ref.putFile(image);
+      if(task == null){return "";}
+      final snapshot = await task.whenComplete(() => {});
+      return await snapshot.ref.getDownloadURL();
+    }on FirebaseException catch(e){
+      print(e);
+      return '';
+    }
+  }
+
+  Future createReportData(
+    String infraction, String licensePlate, String location, String description, File image, String date) async {
+      var downloadUrl = await uploadImage(image, 'reportsImages/${basename(image.path)}');
+
+      var id = DateTime.now().toString();
+      await reportCollection.doc(id).set({
+        'uid': uid,
+        'infraction': infraction,
+        'license_plate': licensePlate,
+        'date': id,
+        'location': location,
+        'description': description,
+        'image': downloadUrl,
+        'status': "To be reviewed"
+      });
+
+      await updateUserData();
+      return await updatePoliceUserData();
+  }
+
+  Future createPoliceUserData() async {
+    return await userReportCollection.doc('police').set({
       'exists': true,
+      'total_reports': 0,
+      'reports_to_be_reviewed': 0,
+    });
+  }
+
+  Future createUserData(String name, String email, String licensePlate) async {
+    return await userReportCollection.doc(uid).set({
+      'exists': true,
+      'name': name,
+      'email': email,
+      'license_plate': licensePlate,
+      'daily_reports': 0,
+      'license_points': 0,
+      'reward_points': 0,
+      'total_reports': 0,
+      'approved': 0,
     });
   }
 
   Future updateUserData() async {
-    return await userBalcaoCollection.doc(uid).update({
-      'exists': true,
+    return await userReportCollection.doc(uid).update({
+      'total_reports': FieldValue.increment(1),
+      'daily_reports': FieldValue.increment(1),
     });
+  }
+
+  Future updatePoliceUserData() async {
+    return await userReportCollection.doc('police').update({
+      'total_reports': FieldValue.increment(1),
+      'reports_to_be_reviewed': FieldValue.increment(1),
+    });
+  }
+
+  // get user doc stream
+  Stream<UserData> get userData{
+    return userReportCollection.doc(uid).snapshots().map(_userData);
+  }
+
+// get police user doc stream
+  Stream<PoliceUserData> get policeUserData{
+    return userReportCollection.doc('police').snapshots().map(_policeUserData);
+  }
+  
+  // userData from snapshot
+  PoliceUserData _policeUserData(DocumentSnapshot snapshot){
+    var a = PoliceUserData(
+      uid: uid!,
+      total_reports: snapshot.get('total_reports'),
+      reports_to_be_reviewed: snapshot.get('reports_to_be_reviewed'),
+    );
+    return a;
+  }
+
+  // userData from snapshot
+  UserData _userData(DocumentSnapshot snapshot){
+    var a = UserData(
+      uid: uid!,
+      name: snapshot.get('name'),
+      licensePlate: snapshot.get('license_plate'),
+      dailyReports: snapshot.get('daily_reports'),
+      totalReports: snapshot.get('total_reports'),
+      rewardPoints: snapshot.get('reward_points'),
+      licensePoints: snapshot.get('license_points'),
+      approved: snapshot.get('approved')
+    );
+    return a;
   }
 
   /*Future<List<Map<String, dynamic>>> getNewBalcs() async {
@@ -104,23 +197,35 @@ class DatabaseService {
     return list;
   }*/
 
-  Future getAllBalcs() async {
-    Query query = balcaoCollection.orderBy('name').limit(11);
-
-    if (_lastDoc != null) {
-      query = query.startAfterDocument(_lastDoc);
+  Future getAllReports(bool isPolice) async {
+    Query query;
+    if(isPolice){
+      query = reportCollection.orderBy('date').limit(11);
+    }else{
+      query = reportCollection.where('uid', isEqualTo: this.uid).orderBy('date').limit(11);
     }
 
-    if (!_hasMoreBalcs) {
+    if (_lastDoc != null) {
+      query = query.startAfterDocument(_lastDoc!);
+    }
+
+    if (!_hasMoreReports) {
       return;
     }
 
     int currentRequestIndex = _allPagedResults.length;
 
-    var b = await query.get();
+    var b;
+    try{
+      b = await query.get();
+
+    }catch(e){
+      print(e.toString());
+      return;
+    }
 
     if (b.docs.isNotEmpty) {
-      var a = _balcaoListFromSnapshot(b);
+      var a = _reportListFromSnapshot(b);
 
       //does the page exist or not
       var pageExists = currentRequestIndex < _allPagedResults.length;
@@ -134,8 +239,8 @@ class DatabaseService {
         _allPagedResults.add(a);
       }
 
-      List<Balcao> allBalcs = _allPagedResults.fold<List<Balcao>>(
-          List<Balcao>.empty(),
+      List<Report> allReports = _allPagedResults.fold<List<Report>>(
+          [],
           (initialValue, element) => initialValue..addAll(element));
 
       //Save the last doc from the results. Only if it's the current last page
@@ -144,38 +249,40 @@ class DatabaseService {
       }
 
       //determine if there is more balcs to request
-      _hasMoreBalcs = a.length == 11;
-      print(allBalcs.length);
+      _hasMoreReports = a.length == 11;
+      print(allReports.length);
 
-      return allBalcs;
+      return allReports;
     }
   }
 
-  Stream<List<Balcao>> get mostPopular {
-    return balcaoCollection
-        .orderBy("likes", descending: true)
-        .limit(3)
-        .snapshots()
-        .map(_balcaoListFromSnapshot);
+  Future updateReport(Report report, String status) async {
+    await reportCollection.doc(report.date).update({
+      'status': status,
+    });
+    if(status == "Accepted"){
+      await userReportCollection.doc(report.uid).update({
+        'reward_points': FieldValue.increment(1),
+        'approved': FieldValue.increment(1),
+      });
+    }
+    await userReportCollection.doc('police').update({
+      'reports_to_be_reviewed': FieldValue.increment(-1),
+    });
   }
 
-  Stream<List<Balcao>> get newBalcs {
-    return balcaoCollection
-        .orderBy("date", descending: true)
-        .limit(3)
-        .snapshots()
-        .map(_balcaoListFromSnapshot);
-  }
-
-  List<Balcao> _balcaoListFromSnapshot(QuerySnapshot snapshot) {
+  List<Report> _reportListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return Balcao(
-          thumbnail: doc.get('thumbnail'),
-          name: doc.get('name'),
-          price: int.parse(doc.get('price')),
-          likes: doc.get('likes'),
-          description: doc.get('description'),
-          images: doc.get('photos'));
+      return Report(
+        uid: doc.get('uid'),
+        infraction: doc.get('infraction'),
+        licensePlate: doc.get('license_plate'),
+        date: doc.get('date'),
+        location: doc.get('location'),
+        description: doc.get('description'),
+        image: doc.get('image'),
+        status: doc.get('status')
+      );
     }).toList();
   }
 }
