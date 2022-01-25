@@ -1,10 +1,13 @@
-import 'package:CCU/models/balcao.dart';
 import 'package:CCU/models/report.dart';
 import 'package:CCU/models/user.dart';
+import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/screens/loading.dart';
+import 'package:CCU/screens/viewReportPage.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:CCU/services/database.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReportsPage extends StatefulWidget {
   @override
@@ -48,6 +51,16 @@ class _ReportsPageState extends State<ReportsPage> {
           return Loading();
         }
         UserData userData = snapshot.data!;
+
+        DateTime now = new DateTime.now();
+        var formatter = new DateFormat('dd-MM-yyyy');
+        String formattedDate = formatter.format(now);
+
+        if(userData.last_report != formattedDate){
+          DatabaseService(uid: AuthService().getCurrentUser().uid).updateUserDataDailyRep();
+        }
+
+
         return SafeArea(
             child: Scaffold(
               key: _scaffoldKey,
@@ -86,7 +99,12 @@ class _ReportsPageState extends State<ReportsPage> {
                                   size: 60,
                                   color: Colors.white,
                                 ), 
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if(userData.dailyReports < 3){
+                                    await availableCameras().then((value) => Navigator.push(context, 
+                                    MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
+                                  }
+                                },
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
@@ -223,43 +241,48 @@ class _ReportsPageState extends State<ReportsPage> {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  border: Border.all(
-                                    color: Colors.blueAccent,
-                                    width: 3,
-                                  )
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image(
-                                      image: NetworkImage(_reports[index].image),
-                                      width: 100,
-                                      height: 180,
-                                    ),
-                                    Container(
-                                      width: 105,
-                                      child: Text(_reports[index].date, 
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 20
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewReportPage(report: _reports[index])));
+                                },
+                                child: Container(
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    border: Border.all(
+                                      color: Colors.blueAccent,
+                                      width: 3,
+                                    )
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: NetworkImage(_reports[index].image),
+                                        width: 100,
+                                        height: 180,
+                                      ),
+                                      Container(
+                                        width: 105,
+                                        child: Text(_reports[index].date, 
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 20
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: 90,
-                                      child: Text(_reports[index].status, 
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20
+                                      Container(
+                                        width: 90,
+                                        child: Text(_reports[index].status, 
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

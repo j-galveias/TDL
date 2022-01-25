@@ -72,6 +72,25 @@ class _ReportFormPageState extends State<ReportFormPage>{
                       width: double.infinity,
                       height: topHeight,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 300, 0),
+                      child: Column(
+                        children: [
+                          InkWell (
+                            onTap: () {
+                              var count = 0;
+                              Navigator.of(context).popUntil((_) => count++ >= 2);
+                            },
+                            child:  
+                              Icon(
+                                Icons.arrow_back,
+                                size: 50,
+                                color: Colors.white,
+                              ), 
+                          ),
+                        ],
+                      ),
+                    ),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),

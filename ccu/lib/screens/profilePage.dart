@@ -7,6 +7,7 @@ import 'package:CCU/services/contractLinking.dart';
 import 'package:CCU/services/database.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -53,6 +54,16 @@ class _BodyWidgetState extends State<BodyWidget> {
           return Loading();
         }
         UserData userData = snapshot.data!;
+
+        DateTime now = new DateTime.now();
+        var formatter = new DateFormat('dd-MM-yyyy');
+        String formattedDate = formatter.format(now);
+
+        if(userData.last_report != formattedDate){
+          DatabaseService(uid: AuthService().getCurrentUser().uid).updateUserDataDailyRep();
+        }
+
+
         return SafeArea(
             child: Scaffold(
               key: _scaffoldKey,
@@ -93,8 +104,10 @@ class _BodyWidgetState extends State<BodyWidget> {
                                   color: Colors.white,
                                 ), 
                                 onPressed: () async {
-                                  await availableCameras().then((value) => Navigator.push(context, 
-                                  MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
+                                  if(userData.dailyReports < 3){
+                                    await availableCameras().then((value) => Navigator.push(context, 
+                                    MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
+                                  }
                                 },
                             ),
                             Padding(

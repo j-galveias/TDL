@@ -252,12 +252,14 @@ class _SignInState extends State<SignIn> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         MaterialButton(
+                          color: Colors.blue.shade100,
                           padding: EdgeInsets.all(8.0),
                           textColor: Colors.white,
                           elevation: 80.0,
-                          shape: Border(
-                            bottom: BorderSide(
-                            width: 2.0, color: Colors.lightBlue.shade900)),
+                          shape: Border.all(
+                            color: Colors.blue.shade900,
+                            width: 3,
+                          ),
                           child: Container(
                             width: 250,
                             height: 50,

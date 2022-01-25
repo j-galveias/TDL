@@ -22,7 +22,7 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    final contractLink = Provider.of<ContractLinking>(context);
+    //final contractLink = Provider.of<ContractLinking>(context);
 
 
     if(isLoading){
@@ -168,7 +168,7 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.report.location,
+                    child: Text(widget.report.location.substring(0, widget.report.location.indexOf(',')),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -191,7 +191,7 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.report.date,
+                    child: Text(widget.report.date.substring(0, 16),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -234,10 +234,61 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                             ),
                           ),
                           onPressed: () async {
-                            String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  elevation: 5.0,
+                                  backgroundColor: Colors.blue.shade100,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  title: Text("Accept?", style: TextStyle(fontSize: 25, color: Colors.blue.shade700),),
+                                  content: Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text("Are you sure you want to Accept?", style: TextStyle(fontSize: 20, color: Colors.blue.shade700),),
+                                        SizedBox(height: 30,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
 
-                            //contractLink.decreaseTdl(decrementBy)
-                            Navigator.pop(context);
+                                                var count = 0;
+                                                Navigator.of(context).popUntil((_) => count++ >= 2);
+                                              },
+                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                           },
                           child: Text("Accept", style: TextStyle(fontSize: 22),),
                         ),
@@ -254,8 +305,61 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                             ),
                           ),
                           onPressed: () async {
-                            await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Rejected");
-                            Navigator.pop(context);
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  elevation: 5.0,
+                                  backgroundColor: Colors.blue.shade100,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  title: Text("Reject?", style: TextStyle(fontSize: 25, color: Colors.blue.shade700),),
+                                  content: Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text("Are you sure you want to Reject?", style: TextStyle(fontSize: 20, color: Colors.blue.shade700),),
+                                        SizedBox(height: 30,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Rejected");
+
+                                                var count = 0;
+                                                Navigator.of(context).popUntil((_) => count++ >= 2);
+                                              },
+                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                           },
                           child: Text("Reject", style: TextStyle(fontSize: 22),),
                         ),

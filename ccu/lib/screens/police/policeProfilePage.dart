@@ -76,36 +76,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
-                        child: Column(
-                          children: [
-                            IconButton (
-                              icon: 
-                                Icon(
-                                  Icons.photo_camera,
-                                  size: 60,
-                                  color: Colors.white,
-                                ), 
-                                onPressed: () async {
-                                  await availableCameras().then((value) => Navigator.push(context, 
-                                  MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
-                                },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
-                              child: 
-                                Text(
-                                  "Report",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white
-                                  ),
-                                ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Positioned(
                         top: top,
                         child: 

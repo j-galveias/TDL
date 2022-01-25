@@ -113,7 +113,7 @@ class DatabaseService {
         'lon': lon,
       });
 
-      await updateUserData();
+      await updateUserData(date);
       return await updatePoliceUserData();
   }
 
@@ -136,13 +136,21 @@ class DatabaseService {
       'reward_points': 0,
       'total_reports': 0,
       'approved': 0,
+      'last_report': '',
     });
   }
 
-  Future updateUserData() async {
+  Future updateUserData(String date) async {
     return await userReportCollection.doc(uid).update({
       'total_reports': FieldValue.increment(1),
       'daily_reports': FieldValue.increment(1),
+      'last_report': date,
+    });
+  }
+
+  Future updateUserDataDailyRep() async {
+    return await userReportCollection.doc(uid).update({
+      'daily_reports': 0,
     });
   }
 
@@ -183,7 +191,8 @@ class DatabaseService {
       totalReports: snapshot.get('total_reports'),
       rewardPoints: snapshot.get('reward_points'),
       licensePoints: snapshot.get('license_points'),
-      approved: snapshot.get('approved')
+      approved: snapshot.get('approved'),
+      last_report: snapshot.get('last_report'),
     );
     return a;
   }
@@ -286,8 +295,15 @@ class DatabaseService {
     await reportCollection.doc(report.date).update({
       'status': status,
     });
+    await userReportCollection.doc('police').update({
+      'reports_to_be_reviewed': FieldValue.increment(-1),
+    });
     if(status == "Accepted"){
       var doc = await userReportCollection.where('license_plate', isEqualTo: report.licensePlate).get();
+
+      if(doc.docs.length <= 0){
+        return name;
+      }
 
       UserData rep = _userData(doc.docs[0]);
 
@@ -302,9 +318,6 @@ class DatabaseService {
         'approved': FieldValue.increment(1),
       });
     }
-    await userReportCollection.doc('police').update({
-      'reports_to_be_reviewed': FieldValue.increment(-1),
-    });
     return name;
   }
 
@@ -325,7 +338,7 @@ class DatabaseService {
     }).toList();
   }
 
-  List<UserData> _userDataListFromSnapshot(QuerySnapshot snapshot) {
+  /*List<UserData> _userDataListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return UserData(
         uid: doc.get('uid'),
@@ -338,5 +351,5 @@ class DatabaseService {
         approved: doc.get('approved'),
       );
     }).toList();
-  }
+  }*/
 }

@@ -1,5 +1,4 @@
 
-import 'package:CCU/models/balcao.dart';
 import 'package:CCU/models/policeUser.dart';
 import 'package:CCU/models/report.dart';
 import 'package:CCU/models/user.dart';
@@ -76,33 +75,6 @@ class _PoliceReportsPageState extends State<PoliceReportsPage> {
                                 fontSize: 50
                               ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
-                        child: Column(
-                          children: [
-                            IconButton (
-                              icon: 
-                                Icon(
-                                  Icons.photo_camera,
-                                  size: 60,
-                                  color: Colors.white,
-                                ), 
-                                onPressed: () {},
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
-                              child: 
-                                Text(
-                                  "Report",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white
-                                  ),
-                                ),
-                            ),
-                          ],
                         ),
                       ),
                       Center(
@@ -222,7 +194,7 @@ class _PoliceReportsPageState extends State<PoliceReportsPage> {
                                       ),
                                       Container(
                                         width: 105,
-                                        child: Text(_reports[index].date, 
+                                        child: Text(_reports[index].date.substring(0, 16), 
                                           style: TextStyle(
                                             color: Colors.blue,
                                             fontSize: 20

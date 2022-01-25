@@ -1,11 +1,13 @@
 import 'dart:math';
 
-import 'package:CCU/models/balcao.dart';
 import 'package:CCU/models/user.dart';
+import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:CCU/services/database.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DiscountsPage extends StatefulWidget {
@@ -42,7 +44,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
         UserData userData = snapshot.data!;
 
         for (var i = 0; i < discounts.length; i++) {
-          if(userData.rewardPoints > discounts[i]){
+          if(userData.rewardPoints >= discounts[i]){
             available += 1;
             percentage = min(1, userData.rewardPoints/ discounts[i]);
             currentReward = i;
@@ -51,6 +53,14 @@ class _DiscountsPageState extends State<DiscountsPage> {
             currentReward = i;
             break;
           }
+        }
+
+        DateTime now = new DateTime.now();
+        var formatter = new DateFormat('dd-MM-yyyy');
+        String formattedDate = formatter.format(now);
+
+        if(userData.last_report != formattedDate){
+          DatabaseService(uid: AuthService().getCurrentUser().uid).updateUserDataDailyRep();
         }
 
         return SafeArea(
@@ -92,7 +102,12 @@ class _DiscountsPageState extends State<DiscountsPage> {
                                   size: 60,
                                   color: Colors.white,
                                 ), 
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if(userData.dailyReports < 3){
+                                    await availableCameras().then((value) => Navigator.push(context, 
+                                    MaterialPageRoute(builder: (context) => CameraPage(cameras: value))));
+                                  }
+                                },
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
@@ -279,9 +294,9 @@ class _DiscountsPageState extends State<DiscountsPage> {
                               child: Container(
                                 height: 100,
                                 decoration: BoxDecoration(
-                                  color: index >= currentReward ? Colors.grey[300] : Colors.blue[50],
+                                  color: userData.rewardPoints < discounts[index] ? Colors.grey[300] : Colors.blue[50],
                                   border: Border.all(
-                                    color: index >= currentReward ? Colors.black12 : Colors.blueAccent,
+                                    color: userData.rewardPoints < discounts[index] ? Colors.black12 : Colors.blueAccent,
                                     width: 3,
                                   )
                                 ),
@@ -292,16 +307,16 @@ class _DiscountsPageState extends State<DiscountsPage> {
                                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                                       child: Text(discNames[index], 
                                         style: TextStyle(
-                                          color: index >= currentReward ? Colors.black38 : Colors.blue,
+                                          color: userData.rewardPoints < discounts[index] ? Colors.black38 : Colors.blue,
                                           fontSize: 20
                                         ),
                                       ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                      child: Text(index >= currentReward ? "Not available" : "Redeem", 
+                                      child: Text(userData.rewardPoints < discounts[index] ? "Not available" : "Redeem", 
                                         style: TextStyle(
-                                          color: index >= currentReward ? Colors.black38 : Colors.blue,
+                                          color: userData.rewardPoints < discounts[index] ? Colors.black38 : Colors.blue,
                                           fontSize: 20
                                         ),
                                       ),

@@ -1,4 +1,3 @@
-import 'package:CCU/models/balcao.dart';
 import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/services/auth.dart';
 import 'package:flutter/material.dart';
