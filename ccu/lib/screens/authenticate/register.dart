@@ -46,7 +46,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     final top = topHeight - profileImageHeight / 2;
     final bottom = profileImageHeight / 2;
-    final contractLink = Provider.of<ContractLinking>(context);
+    //final contractLink = Provider.of<ContractLinking>(context);
 
     return loading
         ? Loading()
@@ -303,8 +303,8 @@ class _RegisterState extends State<Register> {
                                     loading = false;
                                   });
                                 }else{
-                                  dynamic result = await contractLink.addData(name);
-                                  print(result);
+                                  /*dynamic result = await contractLink.addData(name);
+                                  print(result);*/
                                 }
                               }
                             },
