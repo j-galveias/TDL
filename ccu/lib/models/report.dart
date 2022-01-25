@@ -9,6 +9,8 @@ class Report {
   String location;
   String status;
   String uid;
+  String lon;
+  String lat;
 
   Report({
     required this.date,
@@ -19,5 +21,7 @@ class Report {
     required this.location,
     required this.status,
     required this.uid,
+    required this.lat,
+    required this.lon,
   });
 }

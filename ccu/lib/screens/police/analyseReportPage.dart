@@ -1,8 +1,10 @@
 import 'package:CCU/models/report.dart';
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/services/auth.dart';
+import 'package:CCU/services/contractLinking.dart';
 import 'package:CCU/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AnalyseReportPage extends StatefulWidget {
   Report report;
@@ -20,7 +22,9 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final contractLink = Provider.of<ContractLinking>(context);
+
+
     if(isLoading){
       return Loading();
     }
@@ -230,7 +234,9 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                             ),
                           ),
                           onPressed: () async {
-                            await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+                            String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+
+                            //contractLink.decreaseTdl(decrementBy)
                             Navigator.pop(context);
                           },
                           child: Text("Accept", style: TextStyle(fontSize: 22),),

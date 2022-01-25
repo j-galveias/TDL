@@ -3,6 +3,7 @@ import 'package:CCU/screens/camera/cameraPage.dart';
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/screens/wrapper.dart';
 import 'package:CCU/services/auth.dart';
+import 'package:CCU/services/contractLinking.dart';
 import 'package:CCU/services/database.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,11 @@ class _BodyWidgetState extends State<BodyWidget> {
     
     final top = topHeight - profileImageHeight / 2;
     final bottom = profileImageHeight / 2;
+    /*final contractLink = Provider.of<ContractLinking>(context);
+    contractLink.getData();
+    if(contractLink.isLoading){
+      return Loading();
+    }*/
   
     return StreamBuilder<UserData>(
       stream: DatabaseService(uid: AuthService().getCurrentUser().uid).userData,
@@ -178,6 +184,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                             ),
                           ),
                           Text(
+                            //contractLink.currentTokens == null ? "0"  : contractLink.currentTokens!,
                             userData.licensePoints.toString(),
                             style: TextStyle(
                               color: Colors.blue,

@@ -1,6 +1,8 @@
 import 'package:CCU/screens/loading.dart';
 import 'package:CCU/services/auth.dart';
+import 'package:CCU/services/contractLinking.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -44,6 +46,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     final top = topHeight - profileImageHeight / 2;
     final bottom = profileImageHeight / 2;
+    final contractLink = Provider.of<ContractLinking>(context);
 
     return loading
         ? Loading()
@@ -293,12 +296,15 @@ class _RegisterState extends State<Register> {
                                 });
                                 dynamic result = await _auth.registerEmailAndPassword(
                                     email, password, name, nif);
-                                print(result);
+                                print("--------" + result.toString());
                                 if (result == null) {
                                   setState(() {
                                     error = 'Please supply a valid email';
                                     loading = false;
                                   });
+                                }else{
+                                  dynamic result = await contractLink.addData(name);
+                                  print(result);
                                 }
                               }
                             },

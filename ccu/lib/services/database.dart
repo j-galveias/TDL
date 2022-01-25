@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:CCU/models/policeUser.dart';
 import 'package:CCU/models/report.dart';
 import 'package:CCU/models/user.dart';
@@ -95,7 +96,7 @@ class DatabaseService {
   }
 
   Future createReportData(
-    String infraction, String licensePlate, String location, String description, File image, String date) async {
+    String infraction, String licensePlate, String location, String description, File image, String date, String lon, String lat) async {
       var downloadUrl = await uploadImage(image, 'reportsImages/${basename(image.path)}');
 
       var id = DateTime.now().toString();
@@ -107,7 +108,9 @@ class DatabaseService {
         'location': location,
         'description': description,
         'image': downloadUrl,
-        'status': "To be reviewed"
+        'status': "To be reviewed",
+        'lat': lat,
+        'lon': lon,
       });
 
       await updateUserData();
@@ -129,7 +132,7 @@ class DatabaseService {
       'email': email,
       'license_plate': licensePlate,
       'daily_reports': 0,
-      'license_points': 0,
+      'license_points': 12,
       'reward_points': 0,
       'total_reports': 0,
       'approved': 0,
@@ -256,11 +259,44 @@ class DatabaseService {
     }
   }
 
-  Future updateReport(Report report, String status) async {
+  Future getAllReportsNoLimit() async {
+    Query query;
+    query = reportCollection.orderBy('date');
+
+    int currentRequestIndex = _allPagedResults.length;
+
+    var b;
+    try{
+      b = await query.get();
+
+    }catch(e){
+      print(e.toString());
+      return;
+    }
+
+    if (b.docs.isNotEmpty) {
+      var a = _reportListFromSnapshot(b);
+
+      return a;
+    }
+  }
+
+  Future<String> updateReport(Report report, String status) async {
+    String name = '';
     await reportCollection.doc(report.date).update({
       'status': status,
     });
     if(status == "Accepted"){
+      var doc = await userReportCollection.where('license_plate', isEqualTo: report.licensePlate).get();
+
+      UserData rep = _userData(doc.docs[0]);
+
+      var newPoints = max(0, rep.licensePoints - 1);
+      //name = rep.name;
+
+      await userReportCollection.doc(doc.docs[0].reference.id).update({
+        'license_points': newPoints,
+      });
       await userReportCollection.doc(report.uid).update({
         'reward_points': FieldValue.increment(1),
         'approved': FieldValue.increment(1),
@@ -269,6 +305,7 @@ class DatabaseService {
     await userReportCollection.doc('police').update({
       'reports_to_be_reviewed': FieldValue.increment(-1),
     });
+    return name;
   }
 
   List<Report> _reportListFromSnapshot(QuerySnapshot snapshot) {
@@ -281,7 +318,24 @@ class DatabaseService {
         location: doc.get('location'),
         description: doc.get('description'),
         image: doc.get('image'),
-        status: doc.get('status')
+        status: doc.get('status'),
+        lat: doc.get('lat'),
+        lon: doc.get('lon'),
+      );
+    }).toList();
+  }
+
+  List<UserData> _userDataListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return UserData(
+        uid: doc.get('uid'),
+        name: doc.get('name'),
+        licensePlate: doc.get('license_plate'),
+        dailyReports: doc.get('daily_reports'),
+        totalReports: doc.get('total_reports'),
+        rewardPoints: doc.get('reward_points'),
+        licensePoints: doc.get('license_points'),
+        approved: doc.get('approved'),
       );
     }).toList();
   }

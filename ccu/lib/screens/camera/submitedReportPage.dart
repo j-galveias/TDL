@@ -15,12 +15,16 @@ class SubmitedReportPage extends StatefulWidget {
   final String? infraction;
   final String? licensePlate;
   final String? location;
+  final String? lon;
+  final String? lat;
   const SubmitedReportPage({
     this.previewFile, 
     this.description, 
     this.infraction, 
     this.licensePlate, 
     this.location, 
+    this.lon,
+    this.lat,
     Key? key}) : super(key: key);
 
   @override
@@ -47,6 +51,8 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
         widget.description!, 
         File(widget.previewFile!.path), 
         formattedDate,
+        widget.lon!,
+        widget.lat!,
       ).then((value) {
       setState(() {
         isLoading = false;
@@ -165,7 +171,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                       width: 260,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        child: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        child: Text(widget.description!,
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
@@ -247,7 +253,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(60, 0, 8, 0),
+                    padding: const EdgeInsets.fromLTRB(62, 0, 8, 0),
                     child: Text("Date:",
                       //textAlign: TextAlign.end, 
                       style: TextStyle(

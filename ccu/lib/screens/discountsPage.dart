@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:CCU/models/balcao.dart';
 import 'package:CCU/models/user.dart';
 import 'package:CCU/screens/loading.dart';
@@ -18,12 +20,18 @@ class _DiscountsPageState extends State<DiscountsPage> {
   final double topHeight = 150;
   final double barHeight = 60;
 
+  List discounts = [2, 4, 8, 10];
+  List discNames = ["20% off first hour", "5% off gas", "40% off first hour", "20% off gas"];
+
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final top = topHeight - barHeight / 2;
     final bottom = barHeight / 2;
+    int available = 0;
+    int currentReward = 0;
+    double percentage = 0;
 
     return StreamBuilder<UserData>(
       stream: DatabaseService(uid: AuthService().getCurrentUser().uid).userData,
@@ -32,6 +40,19 @@ class _DiscountsPageState extends State<DiscountsPage> {
           return Loading();
         }
         UserData userData = snapshot.data!;
+
+        for (var i = 0; i < discounts.length; i++) {
+          if(userData.rewardPoints > discounts[i]){
+            available += 1;
+            percentage = min(1, userData.rewardPoints/ discounts[i]);
+            currentReward = i;
+          }else{
+            percentage = min(1, userData.rewardPoints/ discounts[i]);
+            currentReward = i;
+            break;
+          }
+        }
+
         return SafeArea(
             child: Scaffold(
               key: _scaffoldKey,
@@ -120,10 +141,10 @@ class _DiscountsPageState extends State<DiscountsPage> {
                                 animation: true, //animation to show progress at first
                                 animationDuration: 1000,
                                 lineHeight: 30.0, //height of progress bar
-                                percent: 0.3, // 30/100 = 0.3
+                                percent: percentage, // 30/100 = 0.3
                                 center: Stack(
                                   children: [
-                                    Text("30.0%", style: 
+                                    Text((percentage * 100).toString() + "%", style: 
                                       TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -133,7 +154,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
                                           ..color = Colors.white,
                                       ),
                                     ),
-                                    Text("30.0%", style: 
+                                    Text((percentage * 100).toString() + "%", style: 
                                       TextStyle(
                                         color: Colors.blue[900],
                                         fontSize: 18,
@@ -146,7 +167,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
                                 progressColor: Colors.blue, //percentage progress bar color
                                 backgroundColor: Colors.blue[50],  //background progressbar color
                               ),
-                              Text("Next Discount", 
+                              Text("Next Discount: " + userData.rewardPoints.toString() + "/" + discounts[currentReward].toString(), 
                                 style: TextStyle(
                                   fontSize: 22,
                                   color: Colors.blue[50],
@@ -176,7 +197,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
                               ),
                             ),
                             Text(
-                              "2",
+                              available.toString(),
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontSize: 18.0),
@@ -202,7 +223,7 @@ class _DiscountsPageState extends State<DiscountsPage> {
                               ),
                             ),
                             Text(
-                              "6",
+                              discounts.length.toString(),
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontSize: 18.0),
@@ -242,35 +263,51 @@ class _DiscountsPageState extends State<DiscountsPage> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0,10,0,0),
                       child: ListView.builder(
-                        itemCount: 8,
+                        itemCount: discounts.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.blue[50],
-                                border: Border.all(
-                                  color: Colors.blueAccent,
-                                  width: 3,
-                                )
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text("20% off first hour", 
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 20
+                            child: InkWell(
+                              onTap: () {
+                                if(index < currentReward || (index == 3 && currentReward == 3)){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildPopupDialog(context, discNames[index]),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: index >= currentReward ? Colors.grey[300] : Colors.blue[50],
+                                  border: Border.all(
+                                    color: index >= currentReward ? Colors.black12 : Colors.blueAccent,
+                                    width: 3,
+                                  )
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                      child: Text(discNames[index], 
+                                        style: TextStyle(
+                                          color: index >= currentReward ? Colors.black38 : Colors.blue,
+                                          fontSize: 20
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  Text("Redeem", 
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 20
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                      child: Text(index >= currentReward ? "Not available" : "Redeem", 
+                                        style: TextStyle(
+                                          color: index >= currentReward ? Colors.black38 : Colors.blue,
+                                          fontSize: 20
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -285,4 +322,30 @@ class _DiscountsPageState extends State<DiscountsPage> {
       }
     );
   }
+}
+
+Widget _buildPopupDialog(BuildContext context, String discount) {
+  return new AlertDialog(
+    title: Text(discount, textAlign: TextAlign.center, style: TextStyle(fontSize: 25, color: Colors.blue),),
+    content: Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Image(image: AssetImage("assets/qrcode.png")),
+          ),
+          Center(
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              textColor: Theme.of(context).primaryColor,
+              child: const Text('Close'),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
