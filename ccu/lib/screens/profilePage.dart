@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+List<String> images = ["assets/tomas.png", "assets/rita.png", "assets/albertina.png"];
+
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -126,12 +128,28 @@ class _BodyWidgetState extends State<BodyWidget> {
                       ),
                       Positioned(
                         top: top,
-                        child: 
+                        child:
+                        CircleAvatar(               
+                          backgroundColor: Colors.blue.shade800,
+                          radius: (profileImageHeight / 2) + 5,
+                          child:
                           CircleAvatar(
                             radius: profileImageHeight / 2,
                             backgroundColor: Colors.white,
-                            backgroundImage: AssetImage('assets/defaultUser.png'),
+                            backgroundImage:
+                            (() {
+                            if(_auth.getCurrentUser().displayName! == "Tomas"){
+                              return AssetImage(images[0]);
+                            }else if(_auth.getCurrentUser().displayName! == "Albertina"){
+                              return AssetImage(images[2]);
+                            }else if(_auth.getCurrentUser().displayName! == "Rita"){
+                              return AssetImage(images[1]);
+                            }else{
+                              return AssetImage('assets/defaultUser.png');
+                            }
+                            }())
                           ),
+                        ),
                       ),  
                     ],
                   ),

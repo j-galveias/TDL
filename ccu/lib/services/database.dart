@@ -212,20 +212,10 @@ class DatabaseService {
   Future getAllReports(bool isPolice) async {
     Query query;
     if(isPolice){
-      query = reportCollection.orderBy('date').limit(11);
+      query = reportCollection.orderBy('date');
     }else{
-      query = reportCollection.where('uid', isEqualTo: this.uid).orderBy('date').limit(11);
+      query = reportCollection.where('uid', isEqualTo: this.uid).orderBy('date');
     }
-
-    if (_lastDoc != null) {
-      query = query.startAfterDocument(_lastDoc!);
-    }
-
-    if (!_hasMoreReports) {
-      return;
-    }
-
-    int currentRequestIndex = _allPagedResults.length;
 
     var b;
     try{
@@ -239,29 +229,13 @@ class DatabaseService {
     if (b.docs.isNotEmpty) {
       var a = _reportListFromSnapshot(b);
 
-      //does the page exist or not
-      var pageExists = currentRequestIndex < _allPagedResults.length;
-
-      //if the page exists update the values to the new balcs
-      if (pageExists) {
-        _allPagedResults[currentRequestIndex] = a;
-      }
-      //if the page doesnt exist add the data
-      else {
-        _allPagedResults.add(a);
-      }
+      _allPagedResults.add(a);
 
       List<Report> allReports = _allPagedResults.fold<List<Report>>(
           [],
           (initialValue, element) => initialValue..addAll(element));
 
-      //Save the last doc from the results. Only if it's the current last page
-      if (currentRequestIndex == _allPagedResults.length - 1) {
-        _lastDoc = b.docs.last;
-      }
 
-      //determine if there is more balcs to request
-      _hasMoreReports = a.length == 11;
       print(allReports.length);
 
       return allReports;

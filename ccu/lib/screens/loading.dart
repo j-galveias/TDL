@@ -16,19 +16,14 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[500],
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            flex: 8,
-            child: Image.asset(
-              'assets/logo.jpg',
-              width: 200,
-              height: 200,
-            ),
-          ),
+          SizedBox(height: 300,),
+          Container(child: Text("TDL", style: TextStyle(fontSize: 100, color: Colors.blue[500]),)),
+          SizedBox(height: 100,),
           Expanded(
             flex: 2,
             child: SpinKitDoubleBounce(

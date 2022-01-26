@@ -264,7 +264,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                       ),
                                       Container(
                                         width: 105,
-                                        child: Text(_reports[index].date, 
+                                        child: Text(_reports[index].date.substring(0, 16), 
                                           style: TextStyle(
                                             color: Colors.blue,
                                             fontSize: 20

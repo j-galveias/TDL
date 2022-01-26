@@ -79,16 +79,20 @@ class _BodyWidgetState extends State<BodyWidget> {
                       Positioned(
                         top: top,
                         child: 
-                          CircleAvatar(
+                        CircleAvatar(               
+                          backgroundColor: Colors.blue.shade800,
+                          radius: (profileImageHeight / 2) + 5,
+                            child: CircleAvatar(
                             radius: profileImageHeight / 2,
                             backgroundColor: Colors.white,
-                            backgroundImage: AssetImage('assets/defaultUser.png'),
-                          ),
+                            backgroundImage: AssetImage('assets/policeUser.png'),
+                            ),
+                        ),
                       ),  
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
                     child:
                       Text(
                         _auth.getCurrentUser().displayName!,
