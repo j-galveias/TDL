@@ -168,9 +168,13 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.report.location.substring(0, widget.report.location.indexOf(',')),
+                    child: widget.report.location.indexOf(',') != null ? Text(widget.report.location.substring(0, widget.report.location.indexOf(',')) ,
                       style: TextStyle(fontSize: 18),
-                    ),
+                    )
+                    :
+                    Text(widget.report.location,
+                      style: TextStyle(fontSize: 18),  
+                    )
                   ),
                 ],
               ),

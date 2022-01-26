@@ -22,7 +22,7 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String name = '';
-  String nif = '';
+  String license_plate = '';
   String error = '';
   bool loading = false;
 
@@ -233,7 +233,7 @@ class _RegisterState extends State<Register> {
                                                 textInputAction: TextInputAction.done,
                                                 obscureText: false,
                                                 onChanged: (val) {
-                                                  setState(() => nif = val);
+                                                  setState(() => license_plate = val);
                                                 },
                                                 focusNode: _nifFocus,
                                                 controller: _nif_controller,
@@ -295,7 +295,7 @@ class _RegisterState extends State<Register> {
                                   loading = true;
                                 });
                                 dynamic result = await _auth.registerEmailAndPassword(
-                                    email, password, name, nif);
+                                    email, password, name, license_plate.toUpperCase());
                                 print("--------" + result.toString());
                                 if (result == null) {
                                   setState(() {

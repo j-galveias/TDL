@@ -48,7 +48,7 @@ class _SubmitedReportPageState extends State<SubmitedReportPage>{
     DatabaseService(uid: AuthService().getCurrentUser().uid).
       createReportData(
         widget.infraction!, 
-        widget.licensePlate!, 
+        widget.licensePlate!.toUpperCase(), 
         widget.location!, 
         widget.description!, 
         File(widget.previewFile!.path), 

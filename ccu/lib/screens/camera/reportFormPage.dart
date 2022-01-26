@@ -291,13 +291,13 @@ class _ReportFormPageState extends State<ReportFormPage>{
                         ),
                       ),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate() && location != '') {
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: 
                               (context) => SubmitedReportPage(
                                 previewFile: widget.previewFile,
                                 description: description,
                                 infraction: infraction,
-                                licensePlate: licensePlate,
+                                licensePlate: licensePlate.toUpperCase(),
                                 location: location,
                                 lat: lat,
                                 lon: lon,
