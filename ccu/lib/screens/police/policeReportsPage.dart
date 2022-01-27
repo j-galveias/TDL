@@ -173,7 +173,21 @@ class _PoliceReportsPageState extends State<PoliceReportsPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
                                 onTap: (){
-                                   Navigator.push(context, MaterialPageRoute(builder: (context) => AnalyseReportPage(report: _reports[index])));
+                                   Navigator.push(context, MaterialPageRoute(builder: (context) => AnalyseReportPage(report: _reports[index])))
+                                   .then((_) => 
+                                    DatabaseService(uid: AuthService().getCurrentUser().uid)
+                                      .getAllReports(true).then((value) {
+                                        setState(() {
+                                          if (value == null) {
+                                            isLoading = false;
+                                            //return;
+                                          }
+                                          _reports = value;
+                                          isLoading = false;
+                                        });
+                                      })
+                                   );
+                                   
                                 },
                                 child: Container(
                                   height: 100,

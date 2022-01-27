@@ -42,6 +42,24 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                     width: double.infinity,
                     height: topHeight,
                   ),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 300, 0),
+                      child: Column(
+                        children: [
+                          InkWell (
+                            onTap: () {
+                                Navigator.of(context).pop();
+                            },
+                            child:  
+                              Icon(
+                                Icons.arrow_back,
+                                size: 50,
+                                color: Colors.white,
+                              ), 
+                          ),
+                        ],
+                      ),
+                    ),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -246,77 +264,6 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  title: Text("Accept?", style: TextStyle(fontSize: 25, color: Colors.blue.shade700),),
-                                  content: Container(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text("Are you sure you want to Accept?", style: TextStyle(fontSize: 20, color: Colors.blue.shade700),),
-                                        SizedBox(height: 30,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 0,
-                                                primary: Colors.blue,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
-                                            ),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 0,
-                                                primary: Colors.blue,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                ),
-                                              ),
-                                              onPressed: () async {
-                                                String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
-
-                                                var count = 0;
-                                                Navigator.of(context).popUntil((_) => count++ >= 2);
-                                              },
-                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                          },
-                          child: Text("Accept", style: TextStyle(fontSize: 22),),
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        width: 110,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            primary: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: () async {
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  elevation: 5.0,
-                                  backgroundColor: Colors.blue.shade100,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
                                   title: Text("Reject?", style: TextStyle(fontSize: 25, color: Colors.blue.shade700),),
                                   content: Container(
                                     child: Column(
@@ -366,6 +313,77 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                               );
                           },
                           child: Text("Reject", style: TextStyle(fontSize: 22),),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 110,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            primary: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () async {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  elevation: 5.0,
+                                  backgroundColor: Colors.blue.shade100,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  title: Text("Accept?", style: TextStyle(fontSize: 25, color: Colors.blue.shade700),),
+                                  content: Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text("Are you sure you want to Accept?", style: TextStyle(fontSize: 20, color: Colors.blue.shade700),),
+                                        SizedBox(height: 30,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+
+                                                var count = 0;
+                                                Navigator.of(context).popUntil((_) => count++ >= 2);
+                                              },
+                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                          },
+                          child: Text("Accept", style: TextStyle(fontSize: 22),),
                         ),
                       ),
                     ],
