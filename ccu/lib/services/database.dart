@@ -208,6 +208,11 @@ class DatabaseService {
       'reports_to_be_reviewed': FieldValue.increment(-1),
     });
     if(status == "Accepted"){
+      await userReportCollection.doc(report.uid).update({
+        'reward_points': FieldValue.increment(1),
+        'approved': FieldValue.increment(1),
+      });
+      
       var doc = await userReportCollection.where('license_plate', isEqualTo: report.licensePlate).get();
 
       if(doc.docs.length <= 0){
@@ -221,10 +226,6 @@ class DatabaseService {
 
       await userReportCollection.doc(doc.docs[0].reference.id).update({
         'license_points': newPoints,
-      });
-      await userReportCollection.doc(report.uid).update({
-        'reward_points': FieldValue.increment(1),
-        'approved': FieldValue.increment(1),
       });
     }
     return name;

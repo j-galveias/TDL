@@ -284,7 +284,7 @@ class _AnalyseReportPageState extends State<AnalyseReportPage> {
                                                 ),
                                               ),
                                               onPressed: () async {
-                                                String name = await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
+                                                await DatabaseService(uid: AuthService().getCurrentUser().uid).updateReport(widget.report, "Accepted");
 
                                                 var count = 0;
                                                 Navigator.of(context).popUntil((_) => count++ >= 2);

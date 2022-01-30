@@ -179,10 +179,10 @@ class _PoliceReportsPageState extends State<PoliceReportsPage> {
                                       .getAllReports(true).then((value) {
                                         setState(() {
                                           if (value == null) {
-                                            isLoading = false;
-                                            //return;
+                                            _reports = [];
+                                          }else{
+                                            _reports = value;
                                           }
-                                          _reports = value;
                                           isLoading = false;
                                         });
                                       })
