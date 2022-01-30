@@ -64,9 +64,10 @@ class _PreviewPageState extends State<PreviewPage>{
                                                 ),
                                               ),
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                var count = 0;
+                                                Navigator.of(context).popUntil((_) => count++ >= 2);
                                               },
-                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
+                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
                                             ),
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
@@ -77,10 +78,9 @@ class _PreviewPageState extends State<PreviewPage>{
                                                 ),
                                               ),
                                               onPressed: () {
-                                                var count = 0;
-                                                Navigator.of(context).popUntil((_) => count++ >= 2);
+                                                Navigator.of(context).pop();
                                               },
-                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
+                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
                                             ),
                                           ],
                                         ),
@@ -133,9 +133,10 @@ class _PreviewPageState extends State<PreviewPage>{
                                                 ),
                                               ),
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                Navigator.push(context, MaterialPageRoute(builder: 
+                                                  (context) => ReportFormPage(previewFile: widget.previewFile)));
                                               },
-                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
+                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
                                             ),
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
@@ -146,10 +147,9 @@ class _PreviewPageState extends State<PreviewPage>{
                                                 ),
                                               ),
                                               onPressed: () {
-                                                Navigator.push(context, MaterialPageRoute(builder: 
-                                                  (context) => ReportFormPage(previewFile: widget.previewFile)));
+                                                Navigator.of(context).pop();
                                               },
-                                              child: Text('Yes', style: TextStyle(color: Colors.blue.shade50),),
+                                              child: Text('No', style: TextStyle(color: Colors.blue.shade50),),
                                             ),
                                           ],
                                         ),

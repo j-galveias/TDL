@@ -29,59 +29,6 @@ class DatabaseService {
 
   bool _hasMoreReports = true;
 
-  /*Future<bool> checkFavBalc(String name) async {
-    DocumentSnapshot doc = await userBalcaoCollection.doc(uid).get();
-    try {
-      if (doc.get(name) != null) {
-        return Future<bool>.value(true);
-      }
-    } catch (e) {
-      return Future<bool>.value(false);
-    }
-  }*/
-
-  /*Future addFavBalcao(String name) async {
-    await balcaoCollection.doc(name).update({
-      'likes': FieldValue.increment(1),
-    });
-    return await userBalcaoCollection.doc(uid).update({
-      name: name,
-    });
-  }*/
-
-  /*Future deleteFavBalcao(String name) async {
-    await balcaoCollection.doc(name).update({
-      'likes': FieldValue.increment(-1),
-    });
-    return await userBalcaoCollection.doc(uid).update({
-      name: FieldValue.delete(),
-    });
-  }*/
-
-  /*Future getBalc(String key) async {
-    return await balcaoCollection.doc(key).get();
-  }*/
-
-  /*Future getFavs() async {
-    // TODO: check conflicts with existed field;
-    List<Balcao> listOfFavs = [];
-    DocumentSnapshot docs = await userBalcaoCollection.doc(uid).get();
-    final favs = new SplayTreeMap.from(docs.data());
-    for (String key in favs.keys) {
-      if (key != 'exists') {
-        var doc = await balcaoCollection.doc(key).get();
-        listOfFavs.add(Balcao(
-            thumbnail: await doc.get('thumbnail'),
-            name: await doc.get('name'),
-            price: int.parse(await doc.get('price')),
-            likes: await doc.get('likes'),
-            description: await doc.get('description'),
-            images: await doc.get('photos')));
-      }
-    }
-    return listOfFavs;
-  }*/
-
   Future<String> uploadImage(File image, String path) async {
     try{
       final ref = FirebaseStorage.instance.ref(path);
@@ -197,22 +144,10 @@ class DatabaseService {
     return a;
   }
 
-  /*Future<List<Map<String, dynamic>>> getNewBalcs() async {
-    QuerySnapshot snap =
-        await balcaoCollection.orderBy("date", descending: true).limit(3).get();
-
-    List<Map<String, dynamic>> list =
-        snap.docs.map((DocumentSnapshot e) => e.data()).toList();
-
-    print(list);
-
-    return list;
-  }*/
-
   Future getAllReports(bool isPolice) async {
     Query query;
     if(isPolice){
-      query = reportCollection.orderBy('date');
+      query = reportCollection.where('status', isEqualTo: 'To be reviewed').orderBy('date');
     }else{
       query = reportCollection.where('uid', isEqualTo: this.uid).orderBy('date');
     }
