@@ -168,7 +168,7 @@ class _ViewReportPageState extends State<ViewReportPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.report.location,
+                    child: Text(widget.report.location.substring(0, widget.report.location.indexOf(',')),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -191,7 +191,7 @@ class _ViewReportPageState extends State<ViewReportPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Text(widget.report.date,
+                    child: Text(widget.report.date.substring(0, 16),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-const kGoogleApiKey = "AIzaSyASCVlOZv4Uo30hDEO7qcTRdcC7MeVYVJw";
+const kGoogleApiKey = "API_KEY";
 
 class ReportFormPage extends StatefulWidget {
 
@@ -143,7 +143,7 @@ class _ReportFormPageState extends State<ReportFormPage>{
                           color: Colors.lightBlue.shade50,
                           child: GooglePlaceAutoCompleteTextField(
                               textEditingController: _location_controller,
-                              googleAPIKey: "AIzaSyASCVlOZv4Uo30hDEO7qcTRdcC7MeVYVJw",
+                              googleAPIKey: "API_KEY",
                               inputDecoration: InputDecoration(
                                 enabledBorder: 
                                   OutlineInputBorder(

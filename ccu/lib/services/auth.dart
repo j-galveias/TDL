@@ -34,7 +34,6 @@ class AuthService {
           email: email, password: password);
       User user = result.user!;
       user.updateDisplayName(name);
-      user.updatePhotoURL('https://firebasestorage.googleapis.com/v0/b/balcoes-79acf.appspot.com/o/avatarIconGrande.png?alt=media&token=b6af58cc-087c-4ab6-aa42-728a2294e98a');
       //create new document for the user with uid
       await DatabaseService(uid: user.uid).createUserData(name, email, licensePlate);
 
